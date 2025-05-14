@@ -25,7 +25,7 @@
     .btn {
       width: 150px;
       height: 150px;
-      border: 6px solid transparent;
+      border: 6px solid #888;
       border-radius: 20px;
       opacity: 0.8;
       transition: 0.2s;
@@ -38,7 +38,7 @@
     .btn.active {
       opacity: 1;
       border-color: white;
-      box-shadow: 0 0 20px white;
+      box-shadow: 0 0 30px white;
       transform: scale(1.1);
     }
     #start-btn {
@@ -55,10 +55,15 @@
       font-size: 18px;
       color: #333;
     }
+    #progress {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <h1>🎨 Simon Game for Kids 🎵</h1>
+  <h1 id="title">🎨 Simon Game for Kids 🎵</h1>
   <div id="game-board">
     <button class="btn green" id="green"></button>
     <button class="btn red" id="red"></button>
@@ -67,6 +72,7 @@
   </div>
   <button id="start-btn">Start Game</button>
   <div id="message"></div>
+  <div id="progress"></div>
 
   <audio id="intro-sound" src="https://cdn.pixabay.com/audio/2022/03/24/audio_39b64884d1.mp3"></audio>
   <audio id="success-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_a9c8e997c2.mp3"></audio>
@@ -98,11 +104,13 @@
         flashButton(color);
       }
       allowInput = true;
+      updateProgress();
     };
 
     const nextRound = () => {
       level++;
       document.getElementById("message").innerText = `Level ${level} – Watch and repeat!`;
+      document.getElementById("title").innerText = `🎨 Simon Game – Level ${level} 🎵`;
       userSequence = [];
       const nextColor = colors[Math.floor(Math.random() * 4)];
       sequence.push(nextColor);
@@ -113,14 +121,17 @@
       if (!allowInput) return;
       userSequence.push(color);
       flashButton(color);
+      updateProgress();
 
       if (color !== sequence[userSequence.length - 1]) {
         document.getElementById("fail-sound").play();
-        document.getElementById("message").innerText = "Oops! Try again!";
+        document.getElementById("message").innerText = `Oops! You reached level ${level}. Tap Start to play again!`;
+        document.getElementById("title").innerText = "🎨 Simon Game for Kids 🎵";
         sequence = [];
         userSequence = [];
         level = 0;
         allowInput = false;
+        document.getElementById("progress").innerText = "";
         return;
       }
 
@@ -130,11 +141,16 @@
       }
     };
 
+    const updateProgress = () => {
+      document.getElementById("progress").innerText = `Your moves: ${userSequence.length} / ${sequence.length}`;
+    };
+
     document.getElementById("start-btn").addEventListener("click", () => {
       document.getElementById("intro-sound").play();
       sequence = [];
       userSequence = [];
       level = 0;
+      document.getElementById("progress").innerText = "";
       nextRound();
     });
 
