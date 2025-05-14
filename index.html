@@ -25,10 +25,11 @@
     .btn {
       width: 150px;
       height: 150px;
-      border: none;
+      border: 6px solid transparent;
       border-radius: 20px;
       opacity: 0.8;
       transition: 0.2s;
+      box-sizing: border-box;
     }
     .green { background-color: #00cc66; }
     .red { background-color: #ff4d4d; }
@@ -36,7 +37,9 @@
     .blue { background-color: #3399ff; }
     .btn.active {
       opacity: 1;
+      border-color: white;
       box-shadow: 0 0 20px white;
+      transform: scale(1.1);
     }
     #start-btn {
       margin-top: 30px;
@@ -64,6 +67,10 @@
   </div>
   <button id="start-btn">Start Game</button>
   <div id="message"></div>
+
+  <audio id="intro-sound" src="https://cdn.pixabay.com/audio/2022/03/24/audio_39b64884d1.mp3"></audio>
+  <audio id="success-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_a9c8e997c2.mp3"></audio>
+  <audio id="fail-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_3837c7743c.mp3"></audio>
 
   <script>
     const colors = ["green", "red", "yellow", "blue"];
@@ -108,6 +115,7 @@
       flashButton(color);
 
       if (color !== sequence[userSequence.length - 1]) {
+        document.getElementById("fail-sound").play();
         document.getElementById("message").innerText = "Oops! Try again!";
         sequence = [];
         userSequence = [];
@@ -117,11 +125,13 @@
       }
 
       if (userSequence.length === sequence.length) {
+        document.getElementById("success-sound").play();
         setTimeout(nextRound, 1000);
       }
     };
 
     document.getElementById("start-btn").addEventListener("click", () => {
+      document.getElementById("intro-sound").play();
       sequence = [];
       userSequence = [];
       level = 0;
